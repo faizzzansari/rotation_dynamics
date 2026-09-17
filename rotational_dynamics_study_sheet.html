@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotational Dynamics - Premium Study Sheet by Shah Aftab Ali</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }
+        };
+    </script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4, h5, h6, .poppins {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .watermark-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' opacity='0.08' transform='rotate(-35)'><text x='50%' y='50%' fill='%23000' font-size='28' font-family='Arial' font-weight='bold' text-anchor='middle' dominant-baseline='middle'>SHAH AFTAB ALI</text></svg>");
+            background-repeat: repeat;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            .watermark-bg {
+                display: block !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                opacity: 0.15 !important;
+            }
+            body { background: white; font-size: 12pt; }
+            .card { break-inside: avoid; border: 1px solid #cbd5e1; box-shadow: none !important; }
+            .topic-section { page-break-before: always; }
+            #cover-page { page-break-after: always; }
+        }
+
+        .section-scroll { scroll-margin-top: 80px; }
+        
+        .card { 
+            @apply p-5 rounded-2xl shadow-sm mb-6 border-l-4 transition-all duration-300 hover:shadow-md bg-white relative overflow-hidden; 
+        }
+        .card-header { @apply font-bold text-lg flex items-center mb-3 pb-2 border-b border-opacity-20; }
+        
+        /* Color Coding based on student psychology */
+        .card-core { @apply border-blue-500; background: linear-gradient(to right, #eff6ff, #ffffff); }
+        .card-core .card-header { @apply text-blue-800 border-blue-200; }
+        
+        .card-def { @apply border-indigo-500; background: linear-gradient(to right, #eef2ff, #ffffff); }
+        .card-def .card-header { @apply text-indigo-800 border-indigo-200; }
+        
+        .card-real { @apply border-orange-500; background: linear-gradient(to right, #fff7ed, #ffffff); }
+        .card-real .card-header { @apply text-orange-800 border-orange-200; }
+        
+        .card-form { @apply border-purple-500; background: linear-gradient(to right, #faf5ff, #ffffff); }
+        .card-form .card-header { @apply text-purple-800 border-purple-200; }
+        
+        .card-step { @apply border-slate-600; background: linear-gradient(to right, #f8fafc, #ffffff); }
+        .card-step .card-header { @apply text-slate-800 border-slate-200; }
+        
+        .card-mistake { @apply border-red-500; background: linear-gradient(to right, #fef2f2, #ffffff); }
+        .card-mistake .card-header { @apply text-red-800 border-red-200; }
+        
+        .card-tip { @apply border-emerald-500; background: linear-gradient(to right, #ecfdf5, #ffffff); }
+        .card-tip .card-header { @apply text-emerald-800 border-emerald-200; }
+        
+        .card-quiz { @apply border-cyan-500; background: linear-gradient(to right, #ecfeff, #ffffff); }
+        .card-quiz .card-header { @apply text-cyan-800 border-cyan-200; }
+
+        @keyframes rotate-slow { 100% { transform: rotate(360deg); } }
+        .anim-spin { animation: rotate-slow 6s linear infinite; transform-origin: center; }
+        
+        @keyframes pendulum-swing { 0% { transform: rotate(20deg); } 100% { transform: rotate(-20deg); } }
+        .anim-swing { animation: pendulum-swing 1.5s ease-in-out infinite alternate; transform-origin: top center; }
+        
+        @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .anim-pulse { animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        @keyframes move-car { 0% { transform: translateX(-20px); } 100% { transform: translateX(20px); } }
+        .anim-car { animation: move-car 2s ease-in-out infinite alternate; }
+
+        /* Diagram Containers */
+        .diagram-box {
+            @apply bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col items-center justify-center my-4 overflow-hidden relative;
+            min-height: 200px;
+        }
+
+        .step-item {
+            @apply flex gap-3 mb-3 pb-3 border-b border-slate-100 last:border-0 last:mb-0 last:pb-0;
+        }
+        
+        .step-num {
+            @apply bg-slate-200 text-slate-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-sm;
+        }
+
+        /* SVG drawing styles */
+        .path-dashed { stroke-dasharray: 5,5; }
+        .arrow-head { marker-end: url(#arrow); }
+    </style>
+</head>
+<body class="relative">
+
+    <svg width="0" height="0" class="hidden">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+            </marker>
+        </defs>
+    </svg>
+
+    <div class="watermark-bg"></div>
+
+    <nav class="fixed w-full top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm no-print border-b border-gray-200">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="flex items-center justify-between h-14">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-white font-bold">
+                        <i class="fa-solid fa-rotate"></i>
+                    </div>
+                    <span class="font-bold text-lg text-slate-800 poppins">Physics <span class="text-blue-600 font-black">EASY</span></span>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="window.print()" class="text-xs bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-full font-bold transition flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i> Print Notes
+                    </button>
+                </div>
+            </div>
+            <!-- Quick Links -->
+            <div class="flex gap-4 pb-2 text-[11px] font-bold text-slate-500 overflow-x-auto hide-scrollbar uppercase tracking-wider">
+                <a href="#kinematics" class="hover:text-blue-600 whitespace-nowrap">1. Basics</a>
+                <a href="#dynamics" class="hover:text-blue-600 whitespace-nowrap">2. Forces</a>
+                <a href="#applications" class="hover:text-blue-600 whitespace-nowrap">3. Road Turns</a>
+                <a href="#conical" class="hover:text-blue-600 whitespace-nowrap">4. Pendulum</a>
+                <a href="#vcm" class="hover:text-blue-600 whitespace-nowrap">5. VCM</a>
+                <a href="#moi" class="hover:text-blue-600 whitespace-nowrap">6. Moment of Inertia</a>
+                <a href="#rolling" class="hover:text-blue-600 whitespace-nowrap">7. Rolling</a>
+            </div>
+        </div>
+        <div class="h-1 w-full bg-slate-100"><div class="h-1 bg-blue-500" id="progressBar" style="width: 0%;"></div></div>
+    </nav>
+
+    <header id="cover-page" class="pt-32 pb-16 bg-white border-b-8 border-blue-600">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <span class="inline-block py-1.5 px-4 rounded-full bg-blue-100 text-blue-800 text-xs font-black uppercase tracking-widest mb-4 border border-blue-200">
+                Class 12 Physics - Target 100%
+            </span>
+            <h1 class="text-4xl md:text-6xl font-black mb-6 text-slate-900 leading-tight poppins">
+                Rotational Dynamics<br>
+                <span class="text-blue-600 text-3xl md:text-5xl">Made Ridiculously Simple</span>
+            </h1>
+            
+            <div class="bg-yellow-50 border-2 border-yellow-400 p-6 rounded-2xl text-left max-w-2xl mx-auto my-8 shadow-sm">
+                <div class="flex gap-4 items-start">
+                    <div class="text-4xl">👨‍🏫</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Message from Shah Aftab Ali</h3>
+                        <p class="text-slate-700 text-sm leading-relaxed mb-2">
+                            "Mera ek hi rule hai: Agar class ke last bench pe baithe bachche ko samajh nahi aaya, to teacher fail hai. Ye notes un books ki tarah nahi hain jinki language sar ke upar se jati hai. Ise maine <strong>apni aam bol-chal ki bhasha (Hinglish)</strong> mein likha hai."
+                        </p>
+                        <p class="text-slate-700 text-sm leading-relaxed font-bold">
+                            Har formula ke har step ko khol ke dikhaya hai. Isko padhne ke baad aapko kisi aur book ya tuition ki zarurat nahi padegi. Trust me!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inline-flex items-center gap-3 text-sm font-bold text-slate-500 bg-slate-100 px-6 py-3 rounded-full">
+                <i class="fa-solid fa-phone text-green-500"></i> Contact for Doubts: +91 8928205931
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 space-y-10" id="mainContent">
+
+        <section id="kinematics" class="topic-section section-scroll">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl font-black shadow-lg shadow-blue-200">1</div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 poppins">Basics of Circular Motion</h2>
+                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wide">Kya gol ghoomna itna aasan hai?</p>
+                </div>
+            </div>
+
+            <div class="card card-core">
+                <div class="card-header"><i class="fa-solid fa-crosshairs text-blue-500 mr-2"></i> Core Concept</div>
+                <p class="text-slate-700 text-sm leading-relaxed">
+                    Jab koi bhi cheez ek <strong>fixed point</strong> (centre) ke aage-peeche gol ghoomti hai, use Circular Motion kehte hain. <br><br>
+                    Socho aap straight road pe bhag rahe ho - waha aap distance (m) cover karte ho aur aapki speed (m/s) hoti hai. <br>
+                    Par jab aap gol (circle) mein bhagte ho, to aap <strong>angle ($ \theta $)</strong> cover karte ho! Isliye gol ghoomne mein hum <strong>Angular</strong> words use karte hain.
+                </p>
+            </div>
+
+            <div class="diagram-box">
+                <h4 class="font-bold text-sm text-slate-500 mb-4 absolute top-4 left-4">Visual Concept: Circular Motion</h4>
+                <svg width="250" height="250" viewBox="0 0 200 200">
+                    <!-- Circle path -->
+                    <circle cx="100" cy="100" r="70" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4,4"/>
+                    <!-- Center -->
+                    <circle cx="100" cy="100" r="4" fill="#334155"/>
+                    <text x="95" y="115" font-size="12" fill="#334155" font-weight="bold">Center (O)</text>
+                    
+                    <!-- Radius vector -->
+                    <line x1="100" y1="100" x2="160" y2="60" stroke="#3b82f6" stroke-width="2" class="arrow-head" />
+                    <text x="120" y="70" font-size="14" fill="#3b82f6" font-weight="bold">r</text>
+                    
+                    <!-- Particle -->
+                    <circle cx="160" cy="60" r="8" fill="#ef4444" class="anim-pulse"/>
+                    <text x="175" y="55" font-size="12" fill="#ef4444" font-weight="bold">Object</text>
+                    
+                    <!-- Velocity vector -->
+                    <line x1="160" y1="60" x2="120" y2="10" stroke="#10b981" stroke-width="2" class="arrow-head" />
+                    <text x="145" y="25" font-size="14" fill="#10b981" font-weight="bold">Velocity (v)</text>
+
+                    <!-- Angle arc -->
+                    <path d="M 170 100 A 70 70 0 0 0 160 60" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                    <line x1="100" y1="100" x2="170" y2="100" stroke="#94a3b8" stroke-width="1"/>
+                    <text x="140" y="90" font-size="14" fill="#f59e0b" font-weight="bold">θ (Angle)</text>
+                </svg>
+                <p class="text-xs text-center text-slate-500 mt-2 bg-white px-3 py-1 rounded-full border border-slate-200">
+                    Notice karo: Velocity hamesha circle ke <strong>tangent</strong> (bahar nikalne ki koshish) mein hoti hai.
+                </p>
+            </div>
+
+            <div class="card card-def">
+                <div class="card-header"><i class="fa-solid fa-book-open text-indigo-500 mr-2"></i> Dictionary (Naye Words)</div>
+                <div class="space-y-4">
+                    <div class="bg-white p-3 rounded-lg border border-indigo-100 shadow-sm">
+                        <strong class="text-indigo-700 block mb-1">1. Uniform Circular Motion (UCM)</strong>
+                        <p class="text-sm">Jab aapki cycle ke pahiye ki <strong>speed fixed (constant)</strong> ho. Speed wahi hai, lekin direction har second badal rahi hai (gol ghoomne ke liye). <br>
+                        <em>Kyunki direction badal rahi hai, iska matlab velocity badal rahi hai. Aur jaha velocity badalti hai, waha acceleration hota hai! (UCM is an accelerated motion).</em></p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-indigo-100 shadow-sm">
+                        <strong class="text-indigo-700 block mb-1">2. Non-Uniform Circular Motion</strong>
+                        <p class="text-sm">Jab aap fan ON karte ho, uski speed dhire-dhire badhti hai (gol ghoomte hue). Ye non-UCM hai.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-real">
+                <div class="card-header"><i class="fa-solid fa-lightbulb text-orange-500 mr-2"></i> Real-Life Connect</div>
+                <p class="text-sm leading-relaxed">
+                    Ek pathar (stone) ko rassi (string) se bandho aur hawa mein gol ghumao. <br>
+                    Agar aap usko ek hi speed se ghumate rahoge, to wo <strong>UCM</strong> hai. <br>
+                    Agar rassi achanak toot jaye, to pathar gol nahi ghoomega! Wo seedha usi disha (direction) mein bhaagega jahan wo us second tha (Tangent ki line mein). Yahi velocity $v$ ki direction hoti hai.
+                </p>
+            </div>
+
+            <div class="card card-form">
+                <div class="card-header"><i class="fa-solid fa-calculator text-purple-500 mr-2"></i> Important Formulas</div>
+                <p class="text-xs text-purple-600 font-bold mb-3 uppercase">Straight line motion vs Circular motion</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="bg-white border border-purple-100 p-3 rounded-lg">
+                        <span class="text-xs text-slate-400 font-bold block mb-1">Speed = Distance / Time</span>
+                        <div class="text-center font-bold text-slate-700">Linear: $ v = \frac{s}{t} $</div>
+                    </div>
+                    <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg shadow-sm">
+                        <span class="text-xs text-purple-600 font-bold block mb-1">Angular Speed = Angle / Time</span>
+                        <div class="text-center font-bold text-purple-800 text-lg">Angular: $ \omega = \frac{\theta}{t} $</div>
+                        <p class="text-[10px] text-center mt-1 text-purple-600">(Omega $\omega$ is angular speed)</p>
+                    </div>
+                </div>
+                <div class="mt-4 bg-white p-3 rounded border border-purple-200 text-center">
+                    <strong class="text-sm text-purple-800 block mb-2">Relation between straight speed (v) and angular speed ($\omega$):</strong>
+                    <span class="bg-purple-100 px-4 py-2 rounded font-mono font-bold text-lg border border-purple-300 text-purple-900 inline-block shadow-sm">
+                        $ v = r \times \omega $
+                    </span>
+                    <p class="text-[11px] text-slate-500 mt-2">Dhyan rakho: 'r' yaha radius hai circle ka.</p>
+                </div>
+            </div>
+
+            <div class="card card-step">
+                <div class="card-header"><i class="fa-solid fa-shoe-prints text-slate-500 mr-2"></i> Step-by-Step Example (Exam Level)</div>
+                <div class="bg-blue-50 p-3 rounded border border-blue-200 mb-4 text-sm font-bold text-blue-900">
+                    Question: Ek cycle ka pahiya 120 RPM (Rotations Per Minute) se ghoom raha hai. Uski angular velocity ($\omega$) rad/s mein batao.
+                </div>
+                
+                <p class="text-sm font-bold text-slate-700 mb-2">Teacher (Aftab Sir) ka Dimaag (How to think):</p>
+                <div class="space-y-0 text-sm">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div>
+                            <p class="text-slate-600">Pehle dekho diya kya hai: Frequency (chakkars) di hai minute mein. Ise $n$ bolte hain.<br>
+                            $ n = 120 $ RPM (Rotations Per Minute)</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div>
+                            <p class="text-slate-600">Physics mein humein time hamesha <strong>Seconds</strong> mein chahiye hota hai.<br>
+                            So, 1 minute mein 60 seconds hote hain. Pahiye ke 1 second ke chakkar nikalte hain:<br>
+                            $ n = \frac{120}{60} $ rotations per second (rps/Hz)<br>
+                            <strong>$ n = 2 $ Hz</strong> (Yani 1 second mein 2 chakkar)</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div>
+                            <p class="text-slate-600">Humein Angular Velocity ($\omega$) nikalni hai. Ek pura chakkar (circle) angle mein kitna hota hai? $360^\circ$ ya <strong>$2\pi$ radians</strong>.<br>
+                            Agar 1 chakkar = $2\pi$ angle,<br>
+                            To $n$ chakkar = $2\pi \times n$ angle.<br>
+                            Formula ban gaya: <strong>$ \omega = 2\pi n $</strong></p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num border-green-500 text-green-600 bg-green-50"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <p class="text-slate-600">Ab bas value daalo:<br>
+                            $ \omega = 2 \times \pi \times 2 $<br>
+                            <strong>$ \omega = 4\pi $ rad/s.</strong> Ye raha final answer!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-mistake">
+                <div class="card-header"><i class="fa-solid fa-triangle-exclamation text-red-500 mr-2"></i> Sabse Badi Galti (Don't do this!)</div>
+                <p class="text-sm">
+                    Bacche direct 120 value utha kar $\omega = 2\pi(120)$ kar dete hain. <strong>MAHA-GALTI!</strong> <br>
+                    Hamesha RPM (Minute) ko $60$ se divide karke rps (Seconds) mein badlo. <strong>Physics ka rule number 1: Units S.I. honi chahiye (Yani time Seconds mein).</strong>
+                </p>
+            </div>
+            
+            <div class="card card-quiz">
+                <div class="card-header"><i class="fa-solid fa-circle-question text-cyan-500 mr-2"></i> Khud Check Karo</div>
+                <p class="text-sm mb-2 font-bold text-slate-700">Agar fan 60 RPM se ghoom raha hai, to $\omega$ kya hoga?</p>
+                <details class="text-sm bg-white border border-cyan-200 rounded p-2 cursor-pointer">
+                    <summary class="font-bold text-cyan-600 outline-none select-none">Tap to see Answer</summary>
+                    <div class="mt-2 text-slate-600 pt-2 border-t border-cyan-100">
+                        1. RPM ko rps banao: $n = 60/60 = 1$ rps.<br>
+                        2. Formula lagao: $\omega = 2\pi n$<br>
+                        3. Ans: $\omega = 2\pi(1) = 2\pi$ rad/s.
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <section id="dynamics" class="topic-section section-scroll">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl font-black shadow-lg shadow-blue-200">2</div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 poppins">Forces in Circular Motion</h2>
+                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wide">Centripetal aur Centrifugal ka Khel</p>
+                </div>
+            </div>
+
+            <div class="card card-core">
+                <div class="card-header"><i class="fa-solid fa-crosshairs text-blue-500 mr-2"></i> Core Concept</div>
+                <p class="text-slate-700 text-sm leading-relaxed">
+                    Newton baba ne kaha tha: "Bina force ke koi cheez apni direction nahi badal sakti". <br>
+                    Circular motion mein direction har second badal rahi hai. Iska matlab <strong>ek Force lagatar chahiye</strong> jo usko straight jane se roke aur circle mein kheench ke rakhe. <br>
+                    Is centre ki taraf kheenchne wale force ko <strong>Centripetal Force (CPF)</strong> kehte hain. Bina iske gol ghoomna IMPOSSIBLE hai.
+                </p>
+            </div>
+
+            <div class="diagram-box">
+                <h4 class="font-bold text-sm text-slate-500 mb-4 absolute top-4 left-4">Visual Concept: Real vs Fake Force</h4>
+                <div class="flex flex-col md:flex-row gap-8 w-full justify-around mt-6">
+                    
+                    <!-- Centripetal -->
+                    <div class="flex flex-col items-center">
+                        <span class="text-blue-600 font-bold text-sm mb-2 bg-blue-50 px-2 py-1 rounded">Outside View (Real Force)</span>
+                        <svg width="150" height="150" viewBox="0 0 150 150">
+                            <circle cx="75" cy="75" r="50" fill="none" stroke="#cbd5e1" stroke-dasharray="3,3" stroke-width="2"/>
+                            <circle cx="75" cy="75" r="5" fill="#334155"/>
+                            <circle cx="125" cy="75" r="10" fill="#3b82f6"/>
+                            <!-- CPF Arrow pointing inwards -->
+                            <line x1="115" y1="75" x2="85" y2="75" stroke="#ef4444" stroke-width="3" class="arrow-head"/>
+                            <text x="90" y="65" font-size="12" fill="#ef4444" font-weight="bold">CPF</text>
+                            <!-- Velocity -->
+                            <line x1="125" y1="75" x2="125" y2="35" stroke="#10b981" stroke-width="2" class="arrow-head"/>
+                            <text x="130" y="55" font-size="12" fill="#10b981" font-weight="bold">v</text>
+                        </svg>
+                        <p class="text-xs text-slate-500 text-center mt-2 max-w-[150px]">Zameen par khade insaan ko dikhta hai ki Force centre ki taraf (andar) lag raha hai.</p>
+                    </div>
+
+                    <!-- Centrifugal -->
+                    <div class="flex flex-col items-center">
+                        <span class="text-orange-600 font-bold text-sm mb-2 bg-orange-50 px-2 py-1 rounded">Inside View (Fake Force)</span>
+                        <svg width="150" height="150" viewBox="0 0 150 150">
+                            <circle cx="75" cy="75" r="50" fill="none" stroke="#cbd5e1" stroke-dasharray="3,3" stroke-width="2"/>
+                            <circle cx="75" cy="75" r="5" fill="#334155"/>
+                            <circle cx="125" cy="75" r="10" fill="#f59e0b"/>
+                            <!-- Eye inside the ball to represent non-inertial frame -->
+                            <text x="118" y="80" font-size="14">👀</text>
+                            <!-- CFF Arrow pointing outwards -->
+                            <line x1="135" y1="75" x2="165" y2="75" stroke="#f59e0b" stroke-width="3" class="arrow-head"/>
+                            <text x="140" y="65" font-size="12" fill="#f59e0b" font-weight="bold">CFF</text>
+                        </svg>
+                        <p class="text-xs text-slate-500 text-center mt-2 max-w-[150px]">Object par baithe insaan ko lagta hai use koi bahar ki taraf fenk raha hai.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-200">
+                    <h3 class="font-black text-blue-800 text-lg mb-2">Centripetal Force (CPF)</h3>
+                    <ul class="space-y-2 text-sm text-slate-700">
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-blue-500 mt-1"></i> <div><strong>Direction:</strong> Hamesha Centre ki taraf (Inward).</div></li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-blue-500 mt-1"></i> <div><strong>Reality:</strong> Ye ek REAL force hai. Koi na koi isko produce karta hai (jaise rassi ka Tension, ya zameen ka Friction).</div></li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-blue-500 mt-1"></i> <div><strong>Formula:</strong> $ F_c = \frac{mv^2}{r} = mr\omega^2 $</div></li>
+                    </ul>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-xl border border-orange-200">
+                    <h3 class="font-black text-orange-800 text-lg mb-2">Centrifugal Force (CFF)</h3>
+                    <ul class="space-y-2 text-sm text-slate-700">
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-orange-500 mt-1"></i> <div><strong>Direction:</strong> Hamesha Centre se door (Outward).</div></li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-orange-500 mt-1"></i> <div><strong>Reality:</strong> Ye ek FAKE (Pseudo) force hai. Koi ise laga nahi raha, bas Newton ka 1st law (Inertia) ki wajah se feel hota hai.</div></li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-orange-500 mt-1"></i> <div><strong>Formula:</strong> Magnitude same hai: $ \frac{mv^2}{r} $</div></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card card-real">
+                <div class="card-header"><i class="fa-solid fa-car text-orange-500 mr-2"></i> Real-Life Connect</div>
+                <p class="text-sm leading-relaxed mb-3">
+                    Aap ek car mein baithe ho. Driver achanak gaadi ko left turn marta hai (gol ghumata hai). <br>
+                    <strong>Kya hota hai?</strong> Aap right side (bahar ki taraf) window pe jaake takrate ho!
+                </p>
+                <div class="bg-white p-3 rounded border border-orange-100 text-sm">
+                    <span class="text-blue-600 font-bold">1. Bahar Khada Insaan kahega:</span> "Car left ghoomi (Car par <strong>Centripetal force</strong> laga tire aur road ke friction se). Par andar baithe insaan par force nahi laga, wo seedha jana chahta tha (Inertia), isliye window se takraya."<br><br>
+                    <span class="text-orange-600 font-bold">2. Andar Baitha Insaan kahega:</span> "Main aaram se baitha tha, pata nahi kis adrishya (invisible) taqat ne mujhe bahar ki taraf dhakka de diya!" (Isi ko wo <strong>Centrifugal Force</strong> naam dega).
+                </div>
+            </div>
+
+            <div class="card card-tip">
+                <div class="card-header"><i class="fa-solid fa-crosshairs text-emerald-500 mr-2"></i> "Darr Mat Lo!" (Concept Clarity)</div>
+                <p class="text-sm">
+                    Bacche sochte hain ki CPF aur CFF dono ek sath ek hi object par lagte hain aur ek doosre ko cancel kar dete hain. <strong>Ye galat hai!</strong><br><br>
+                    Dono kabhi ek sath use nahi hote. Agar aap zameen (Inertial frame) se math solve kar rahe ho, to sirf <strong>Centripetal (CPF)</strong> lo.<br>
+                    Agar aap ghoomti hui gaadi ya jhule ke andar (Non-inertial frame) baith kar equation bana rahe ho, tab aap equation balance karne ke liye <strong>Centrifugal (CFF)</strong> add karte ho.
+                </p>
+            </div>
+        </section>
+
+        <section id="applications" class="topic-section section-scroll">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl font-black shadow-lg shadow-blue-200">3</div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 poppins">Applications: Gaadi aur Road</h2>
+                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wide">Turning on curves without skidding</p>
+                </div>
+            </div>
+
+            <div class="card card-core">
+                <div class="card-header"><i class="fa-solid fa-road text-blue-500 mr-2"></i> Application 1: Vehicle on Unbanked (Flat) Road</div>
+                <p class="text-sm mb-4">
+                    Jab koi car flat road (jo tedhi nahi hai) pe turn leti hai, to car ko circle mein ghoomne ke liye <strong>Centripetal Force</strong> koun deta hai? Sirf aur sirf tires aur road ke beech ka <strong>Static Friction ($f_s$)</strong>.
+                </p>
+                
+                <div class="diagram-box">
+                    <h4 class="font-bold text-sm text-slate-500 mb-2 absolute top-2 left-4">Free Body Diagram</h4>
+                    <svg width="300" height="150" viewBox="0 0 300 150">
+                        <!-- Road -->
+                        <line x1="50" y1="120" x2="280" y2="120" stroke="#94a3b8" stroke-width="4"/>
+                        <!-- Center of circle point -->
+                        <circle cx="60" cy="120" r="4" fill="#334155"/>
+                        <text x="55" y="140" font-size="12" fill="#334155">Center C</text>
+                        <!-- Car (box) -->
+                        <rect x="180" y="80" width="60" height="40" fill="#3b82f6" rx="4"/>
+                        <!-- Tyres -->
+                        <rect x="190" y="120" width="10" height="10" fill="#1e293b" rx="2"/>
+                        <rect x="220" y="120" width="10" height="10" fill="#1e293b" rx="2"/>
+                        <!-- Center of mass -->
+                        <circle cx="210" cy="100" r="3" fill="white"/>
+                        
+                        <!-- Forces -->
+                        <!-- Weight mg -->
+                        <line x1="210" y1="100" x2="210" y2="145" stroke="#ef4444" stroke-width="2" class="arrow-head"/>
+                        <text x="215" y="145" font-size="12" fill="#ef4444" font-weight="bold">mg</text>
+                        <!-- Normal N -->
+                        <line x1="210" y1="100" x2="210" y2="40" stroke="#10b981" stroke-width="2" class="arrow-head"/>
+                        <text x="215" y="50" font-size="12" fill="#10b981" font-weight="bold">Normal (N)</text>
+                        <!-- Friction fs -->
+                        <line x1="210" y1="100" x2="130" y2="100" stroke="#f59e0b" stroke-width="3" class="arrow-head"/>
+                        <text x="140" y="90" font-size="12" fill="#f59e0b" font-weight="bold">Friction (fs)</text>
+                    </svg>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg mt-4 border border-blue-100">
+                    <p class="text-sm font-bold text-blue-900 mb-2">Step-by-Step Derivation (Very Easy):</p>
+                    <ol class="list-decimal pl-5 text-sm text-slate-700 space-y-2">
+                        <li>Upar ka force = Niche ka force (Car hawa mein nahi ud rahi). So, <strong>$ N = mg $</strong></li>
+                        <li>Andar ka force = Centripetal force. Andar sirf friction lag raha hai. So, <strong>$ f_s = \frac{mv^2}{r} $</strong></li>
+                        <li>Humein pata hai maximum friction kitna ho sakta hai? <strong>$ f_{s(max)} = \mu_s N $</strong> (Jaha $\mu_s$ friction coefficient hai).</li>
+                        <li>Value daalo: $ \frac{mv_{max}^2}{r} = \mu_s (mg) $</li>
+                        <li>Dono side se mass '$m$' cancel ho gaya (Yani car ho ya bhari truck, limit dono ke liye same hai!).<br>
+                        $ \frac{v_{max}^2}{r} = \mu_s g $</li>
+                    </ol>
+                    <div class="mt-4 bg-white border-2 border-blue-400 p-3 rounded text-center">
+                        <span class="block text-xs font-bold text-slate-500 uppercase mb-1">Maximum Safe Speed limit</span>
+                        <span class="font-mono text-2xl font-black text-blue-800">$ v_{max} = \sqrt{\mu_s r g} $</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-core mt-8">
+                <div class="card-header"><i class="fa-solid fa-motorcycle text-indigo-500 mr-2"></i> Application 2: Well of Death (Maut Ka Kuaa)</div>
+                <p class="text-sm mb-4">
+                    Yahan ek vertical cylinder (diwar) ke andar motorcycle wala gol ghoomta hai aur niche nahi girta! Kyun? 
+                    Kyunki <strong>Friction use niche girne se rok raha hai</strong>, aur diwar se lagne wala <strong>Normal reaction use centre ki taraf (CPF) force de raha hai</strong>.
+                </p>
+                
+                <div class="diagram-box">
+                    <h4 class="font-bold text-sm text-slate-500 mb-2 absolute top-2 left-4">Free Body Diagram</h4>
+                    <svg width="250" height="180" viewBox="0 0 250 180">
+                        <!-- Wall -->
+                        <line x1="200" y1="20" x2="200" y2="160" stroke="#94a3b8" stroke-width="4"/>
+                        <line x1="200" y1="160" x2="220" y2="160" stroke="#94a3b8" stroke-width="4"/>
+                        <!-- Center -->
+                        <circle cx="80" cy="90" r="4" fill="#334155"/>
+                        <text x="75" y="110" font-size="12" fill="#334155">Center C</text>
+                        <!-- Radius dashed -->
+                        <line x1="80" y1="90" x2="180" y2="90" stroke="#cbd5e1" stroke-dasharray="4,4" stroke-width="1"/>
+                        
+                        <!-- Bike/Particle -->
+                        <rect x="180" y="70" width="20" height="40" fill="#8b5cf6" rx="2"/>
+                        <circle cx="190" cy="90" r="3" fill="white"/>
+                        
+                        <!-- Forces -->
+                        <!-- Weight mg (down) -->
+                        <line x1="190" y1="90" x2="190" y2="140" stroke="#ef4444" stroke-width="2" class="arrow-head"/>
+                        <text x="165" y="135" font-size="12" fill="#ef4444" font-weight="bold">mg</text>
+                        
+                        <!-- Friction fs (up) -->
+                        <line x1="190" y1="90" x2="190" y2="40" stroke="#10b981" stroke-width="2" class="arrow-head"/>
+                        <text x="170" y="35" font-size="12" fill="#10b981" font-weight="bold">fs</text>
+                        
+                        <!-- Normal N (towards center) -->
+                        <line x1="190" y1="90" x2="130" y2="90" stroke="#3b82f6" stroke-width="3" class="arrow-head"/>
+                        <text x="135" y="80" font-size="12" fill="#3b82f6" font-weight="bold">Normal (N)</text>
+                    </svg>
+                </div>
+
+                <div class="bg-indigo-50 p-4 rounded-lg mt-4 border border-indigo-100">
+                    <p class="text-sm font-bold text-indigo-900 mb-2">Step-by-Step Derivation (Compare with Flat road):</p>
+                    <ol class="list-decimal pl-5 text-sm text-slate-700 space-y-2">
+                        <li>Upar ka force = Niche ka force (Taki wo niche na gire). So yaha: <strong>$ f_s = mg $</strong></li>
+                        <li>Andar ka force = Centripetal force. Andar sirf Normal diwar dhakka de rahi hai. So, <strong>$ N = \frac{mv^2}{r} $</strong></li>
+                        <li>Hum jante hain $ f_s \le \mu_s N $ hona chahiye rukne ke liye. Diwar par chipke rehne ke liye ek minimum speed chahiye, warna girenge.</li>
+                        <li>Value daalo: $ mg \le \mu_s \left(\frac{mv^2}{r}\right) $</li>
+                        <li>Mass '$m$' phir se cancel.<br>
+                        $ g \le \frac{\mu_s v^2}{r} \implies v^2 \ge \frac{rg}{\mu_s} $</li>
+                    </ol>
+                    <div class="mt-4 bg-white border-2 border-indigo-400 p-3 rounded text-center">
+                        <span class="block text-xs font-bold text-slate-500 uppercase mb-1">Minimum Safe Speed (girne se bachne ke liye)</span>
+                        <span class="font-mono text-2xl font-black text-indigo-800">$ v_{min} = \sqrt{\frac{rg}{\mu_s}} $</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-mistake">
+                <div class="card-header"><i class="fa-solid fa-triangle-exclamation text-red-500 mr-2"></i> Common Mistake Alert!</div>
+                <p class="text-sm">
+                    <strong>Flat road</strong> mein Normal upar hota hai ($N=mg$) aur friction centre ki taraf ($f_s = \frac{mv^2}{r}$).<br>
+                    <strong>Well of Death</strong> mein sab ULTA ho jata hai! Normal centre ki taraf ($N = \frac{mv^2}{r}$) aur friction upar ($f_s=mg$). Isko dhyan rakhna, exam mein mix mat karna.
+                </p>
+            </div>
+
+            <div class="card card-core mt-8">
+                <div class="card-header"><i class="fa-solid fa-truck-ramp-box text-blue-500 mr-2"></i> Application 3: Banked Road (Slightly tilted road)</div>
+                <p class="text-sm mb-4">
+                    Barish ke mausam mein Flat road par sirf friction pe depend karna khatarnak hai (gaadi fisal sakti hai). Isliye engineer curve par road ko thoda ek side se utha dete hain (angle $\theta$ par tilt kar dete hain). Ise <strong>Banking of Road</strong> kehte hain. Isse Normal reaction ka ek hissa gaadi ko centre ki taraf dhakka deta hai (CPF ban jata hai)!
+                </p>
+                
+                <!-- Diagram Banked Road -->
+                <div class="diagram-box">
+                    <h4 class="font-bold text-sm text-slate-500 mb-2 absolute top-2 left-4">Components on Banked Road</h4>
+                    <svg width="300" height="200" viewBox="0 0 300 200">
+                        <!-- Horizontal ref line -->
+                        <line x1="20" y1="160" x2="280" y2="160" stroke="#cbd5e1" stroke-dasharray="4,4" stroke-width="2"/>
+                        <!-- Banked Road -->
+                        <line x1="40" y1="160" x2="250" y2="80" stroke="#94a3b8" stroke-width="4"/>
+                        <!-- Theta arc -->
+                        <path d="M 80 160 A 40 40 0 0 0 85 142" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                        <text x="95" y="155" font-size="14" fill="#f59e0b" font-weight="bold">θ</text>
+                        
+                        <!-- Car -->
+                        <g transform="translate(150, 118) rotate(-20)">
+                            <rect x="-30" y="-40" width="60" height="35" fill="#3b82f6" rx="4"/>
+                            <circle cx="0" cy="-20" r="3" fill="white"/> <!-- CM -->
+                        </g>
+
+                        <!-- Center of Mass exact position for forces -->
+                        <!-- CM is approx at (145, 100) -->
+                        
+                        <!-- Weight mg (always vertically down) -->
+                        <line x1="145" y1="100" x2="145" y2="180" stroke="#ef4444" stroke-width="2" class="arrow-head"/>
+                        <text x="150" y="175" font-size="12" fill="#ef4444" font-weight="bold">mg</text>
+                        
+                        <!-- Normal N (perpendicular to road) -->
+                        <!-- Road is at -20 deg. Normal is at -20-90 = -110 deg from positive x, or 70 deg up from horizontal -->
+                        <line x1="145" y1="100" x2="110" y2="10" stroke="#10b981" stroke-width="2" class="arrow-head"/>
+                        <text x="95" y="15" font-size="12" fill="#10b981" font-weight="bold">N</text>
+                        
+                        <!-- N cos theta (Vertical component) -->
+                        <line x1="145" y1="100" x2="145" y2="10" stroke="#10b981" stroke-width="1" stroke-dasharray="2,2" class="arrow-head"/>
+                        <text x="150" y="30" font-size="12" fill="#10b981">N cosθ</text>
+                        
+                        <!-- N sin theta (Horizontal component) -->
+                        <line x1="145" y1="100" x2="50" y2="100" stroke="#3b82f6" stroke-width="3" class="arrow-head"/>
+                        <text x="60" y="90" font-size="12" fill="#3b82f6" font-weight="bold">N sinθ (gives CPF)</text>
+
+                        <!-- Construction lines for resolution -->
+                        <line x1="110" y1="10" x2="145" y2="10" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                        <line x1="110" y1="10" x2="50" y2="100" stroke="#cbd5e1" stroke-dasharray="2,2" stroke-width="0.5"/> <!-- Ignore this slightly inaccurate line in SVG context, focus on concept -->
+                    </svg>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg mt-4 border border-blue-100">
+                    <p class="text-sm font-bold text-blue-900 mb-2">Step-by-Step Derivation (Ignoring Friction for "Most Safe Speed"):</p>
+                    <p class="text-xs text-slate-600 mb-3">Hum maan rahe hain road poori chikni (frictionless) hai, fir bhi car turn le legi road tilt hone ki wajah se.</p>
+                    <ol class="list-decimal pl-5 text-sm text-slate-700 space-y-2">
+                        <li>Normal ($N$) ke do tukde (components) kiye. Ek upar gaya: $N \cos\theta$. Ek andar (centre ki taraf) gaya: $N \sin\theta$.</li>
+                        <li>Upar wala niche wale weight ko balance karega: <br><strong>$ N \cos\theta = mg $</strong>  --- (Equation 1)</li>
+                        <li>Andar wala component circle mein ghoomne ke liye CPF dega: <br><strong>$ N \sin\theta = \frac{mv^2}{r} $</strong> --- (Equation 2)</li>
+                        <li>Equation 2 ko Equation 1 se divide kar do: <br>
+                        $ \frac{N \sin\theta}{N \cos\theta} = \frac{mv^2 / r}{mg} $</li>
+                        <li>N aur m cut gaye. $ \sin/\cos $ ban gaya $ \tan $.<br>
+                        $ \tan\theta = \frac{v^2}{rg} $</li>
+                    </ol>
+                    <div class="mt-4 bg-white border-2 border-blue-400 p-3 rounded text-center shadow-sm">
+                        <span class="block text-xs font-bold text-slate-500 uppercase mb-1">Most Optimum/Safe Speed ($v_s$)</span>
+                        <span class="font-mono text-2xl font-black text-blue-800">$ v_s = \sqrt{rg \tan\theta} $</span>
+                        <p class="text-[10px] mt-2 text-slate-500">Notice: Mass ($m$) gayab ho gaya. Yani ek truck aur cycle dono ke liye yeh 'safest speed' exactly same hogi usi road par!</p>
+                    </div>
+                </div>
+
+                <div class="mt-4 grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded text-center">
+                        <span class="text-xs font-bold text-slate-600 block mb-1">Agar gaadi dhime (slow) jaye ($v < v_s$):</span>
+                        <p class="text-[11px] text-slate-500 mb-2">Gaadi niche phisalna chahegi, toh friction <strong>Upar (Up the slope)</strong> lagega use rokne ke liye.</p>
+                        <span class="font-mono text-xs font-bold block bg-white p-2 border rounded">$v_{min} = \sqrt{rg\left(\frac{\tan\theta - \mu_s}{1 + \mu_s \tan\theta}\right)}$</span>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded text-center">
+                        <span class="text-xs font-bold text-slate-600 block mb-1">Agar gaadi bahot tez bhage ($v > v_s$):</span>
+                        <p class="text-[11px] text-slate-500 mb-2">Gaadi bahar (upar) fekayegi, toh friction <strong>Niche (Down the slope)</strong> lagega andar kheenchne ke liye.</p>
+                        <span class="font-mono text-xs font-bold block bg-white p-2 border rounded">$v_{max} = \sqrt{rg\left(\frac{\tan\theta + \mu_s}{1 - \mu_s \tan\theta}\right)}$</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="conical" class="topic-section section-scroll">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl font-black shadow-lg shadow-blue-200">4</div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 poppins">Conical Pendulum</h2>
+                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wide">Dhage se bandha pathar gol ghumana</p>
+                </div>
+            </div>
+
+            <div class="card card-core">
+                <div class="card-header"><i class="fa-solid fa-spinner text-blue-500 mr-2 anim-spin"></i> Core Concept</div>
+                <p class="text-sm mb-4">
+                    Agar ek pathar (bob) ko dhage se bandh kar hawa mein horizontal circle mein ghumao, to dhaga hawa mein ek 'Cone' jaisa shape banata hai. Yaha dhage ki Tension ($T_0$) ka ek component pathar ko CPF deta hai.
+                </p>
+
+                <!-- Diagram Conical Pendulum -->
+                <div class="diagram-box">
+                    <svg width="250" height="200" viewBox="0 0 250 200">
+                        <!-- Rigid support -->
+                        <line x1="70" y1="20" x2="130" y2="20" stroke="#334155" stroke-width="4"/>
+                        <path d="M 75 20 L 85 10 M 90 20 L 100 10 M 105 20 L 115 10 M 120 20 L 130 10" stroke="#334155" stroke-width="1"/>
+                        
+                        <!-- Center vertical axis -->
+                        <line x1="100" y1="20" x2="100" y2="160" stroke="#cbd5e1" stroke-dasharray="4,4" stroke-width="2"/>
+                        <text x="105" y="160" font-size="12" fill="#94a3b8">Center (C)</text>
+                        
+                        <!-- Circular path (horizontal oval) -->
+                        <ellipse cx="100" cy="150" rx="60" ry="20" fill="none" stroke="#94a3b8" stroke-dasharray="2,2" stroke-width="1"/>
+                        
+                        <!-- String (Length L) -->
+                        <line x1="100" y1="20" x2="160" y2="150" stroke="#334155" stroke-width="2"/>
+                        <text x="135" y="80" font-size="12" fill="#334155" font-weight="bold">L (String)</text>
+                        
+                        <!-- Angle theta -->
+                        <path d="M 100 50 A 30 30 0 0 1 113 48" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                        <text x="105" y="45" font-size="12" fill="#f59e0b" font-weight="bold">θ</text>
+                        
+                        <!-- Bob -->
+                        <circle cx="160" cy="150" r="8" fill="#ef4444"/>
+                        
+                        <!-- Forces on Bob -->
+                        <!-- Weight mg -->
+                        <line x1="160" y1="150" x2="160" y2="190" stroke="#ef4444" stroke-width="2" class="arrow-head"/>
+                        <text x="165" y="185" font-size="12" fill="#ef4444" font-weight="bold">mg</text>
+                        
+                        <!-- Tension T0 -->
+                        <line x1="160" y1="150" x2="130" y2="85" stroke="#3b82f6" stroke-width="2" class="arrow-head"/>
+                        <text x="110" y="90" font-size="12" fill="#3b82f6" font-weight="bold">Tension T0</text>
+
+                        <!-- Components of Tension -->
+                        <!-- Vertical T0 cos theta -->
+                        <line x1="160" y1="150" x2="160" y2="100" stroke="#10b981" stroke-width="1.5" stroke-dasharray="2,2" class="arrow-head"/>
+                        <text x="165" y="110" font-size="10" fill="#10b981">T0 cosθ</text>
+                        
+                        <!-- Horizontal T0 sin theta -->
+                        <line x1="160" y1="150" x2="110" y2="150" stroke="#10b981" stroke-width="2" class="arrow-head"/>
+                        <text x="115" y="140" font-size="10" fill="#10b981" font-weight="bold">T0 sinθ</text>
+                        
+                        <!-- Radius r -->
+                        <line x1="100" y1="150" x2="160" y2="150" stroke="#cbd5e1" stroke-width="1"/>
+                        <text x="125" y="165" font-size="10" fill="#64748b">r = L sinθ</text>
+                    </svg>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-lg mt-4 border border-blue-100">
+                    <p class="text-sm font-bold text-blue-900 mb-2">Step-by-Step Derivation (Time Period):</p>
+                    <ol class="list-decimal pl-5 text-sm text-slate-700 space-y-2">
+                        <li>Tension ($T_0$) ke components liye. Upar gaya: $T_0 \cos\theta$. Andar gaya: $T_0 \sin\theta$.</li>
+                        <li>Upar aur Niche balance: <br><strong>$ T_0 \cos\theta = mg $</strong>  --- (1)</li>
+                        <li>Andar wala (CPF) de raha hai: <br><strong>$ T_0 \sin\theta = mr\omega^2 $</strong> --- (2)</li>
+                        <li>(2) ko (1) se divide karo: $\frac{T_0 \sin\theta}{T_0 \cos\theta} = \frac{mr\omega^2}{mg} \implies \tan\theta = \frac{r\omega^2}{g}$</li>
+                        <li>Geometry se dekho, circle ka radius $r = L \sin\theta$ hota hai. Isko daalo aur $\omega$ nikalo.</li>
+                        <li>Humein Time period ($T$) chahiye. Formula hai: $T = \frac{2\pi}{\omega}$. Final equation banti hai:</li>
+                    </ol>
+                    <div class="mt-4 bg-white border-2 border-blue-400 p-3 rounded text-center shadow-sm">
+                        <span class="block text-xs font-bold text-slate-500 uppercase mb-1">Time Period of Conical Pendulum</span>
+                        <span class="font-mono text-2xl font-black text-blue-800">$ T = 2\pi\sqrt{\frac{L \cos\theta}{g}} $</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card card-tip">
+                <div class="card-header"><i class="fa-solid fa-brain text-emerald-500 mr-2"></i> Logic Test</div>
+                <p class="text-sm">
+                    <strong>Sawal:</strong> Kya main pathar ko itna tez ghuma sakta hu ki dhaga bilkul horizontal ($90^\circ$ flat) ho jaye?<br><br>
+                    <strong>Aftab Sir ka Jawab:</strong> NAAA! Socho kyun? Agar dhaga horizontal ho gaya to angle $\theta = 90^\circ$.<br>
+                    Formula dekho: Upar wala component tha $T_0 \cos\theta$. Agar $\theta = 90^\circ$, to $\cos 90^\circ = 0$. <br>
+                    Yani upar khinchne wala force ZERO ho jayega! Phir $mg$ (gravity) ko koun sambhalega? Pathar turant niche gir jayega. Isliye dhaga KABHI exactly horizontal nahi ho sakta.
+                </p>
+            </div>
+        </section>
+
+        <section id="vcm" class="topic-section section-scroll">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl font-black shadow-lg shadow-blue-200">5</div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 poppins">Vertical Circular Motion (VCM)</h2>
+                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wide">Gravity ke sath Khel (Non-UCM)</p>
+                </div>
+            </div>
+
+            <div class="card card-core">
+                <div class="card-header"><i class="fa-solid fa-arrows-up-down text-blue-500 mr-2"></i> Core Concept</div>
+                <p class="text-sm mb-2">
+                    Jab pathar ko rassi se bandh ke 'Upar-Niche' (Vertical circle) mein ghumate hain, to gravity apna role play karti hai. <br>
+                    - Upar jate waqt: Speed kam hoti hai (gravity niche khinchti hai).<br>
+                    - Niche aate waqt: Speed badhti hai.<br>
+                    Isliye ye ek <strong>Non-Uniform Circular Motion</strong> hai.
+                </p>
+                <p class="text-sm font-bold text-blue-800 bg-blue-100 p-2 rounded">
+                    Concept: Upar wali position pe itni speed honi chahiye ki rassi dhili (slack) na ho, warna pathar sidhe niche gir jayega, circle pura nahi hoga.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- VCM String -->
+                <div class="card card-def mb-0 border-t-8 border-indigo-500">
+                    <div class="card-header"><i class="fa-solid fa-dharmachakra text-indigo-500 mr-2"></i> Case 1: Mass on a STRING</div>
+                    <p class="text-xs text-slate-600 mb-3">Rassi dhili ho sakti hai, isliye top pe ek minimum tension $T_{top} \ge 0$ chahiye.</p>
+                    
+                    <table class="w-full text-sm text-left border-collapse">
+                        <thead>
+                            <tr class="bg-indigo-50 border-b border-indigo-100">
+                                <th class="p-2 text-indigo-800">Position</th>
+                                <th class="p-2 text-indigo-800 text-center">Minimum Speed</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="p-2 font-bold text-slate-700">Highest (Top)</td>
+                                <td class="p-2 text-center font-mono font-bold bg-white text-indigo-600">$ \sqrt{rg} $</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-bold text-slate-700">Lowest (Bottom)</td>
+                                <td class="p-2 text-center font-mono font-bold bg-white text-indigo-600">$ \sqrt{5rg} $</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-bold text-slate-700">Midway (Horizontal)</td>
+                                <td class="p-2 text-center font-mono font-bold bg-white text-indigo-600">$ \sqrt{3rg} $</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="mt-3 bg-indigo-100 text-indigo-800 p-2 rounded text-center text-xs font-bold">
+                        Tension Difference (Bottom - Top) = $ 6mg $
+                    </div>
+                </div>
+
+                <!-- VCM Rod -->
+                <div class="card card-def mb-0 border-t-8 border-emerald-500">
+                    <div class="card-header"><i class="fa-solid fa-ruler text-emerald-500 mr-2"></i> Case 2: Mass on a Rigid ROD</div>
+                    <p class="text-xs text-slate-600 mb-3">Lakdi/Rod kabhi dhili nahi hoti. Isliye top pe agar speed ZERO bhi ho jaye to rod pathar ko niche nahi girne degi.</p>
+                    
+                    <table class="w-full text-sm text-left border-collapse">
+                        <thead>
+                            <tr class="bg-emerald-50 border-b border-emerald-100">
+                                <th class="p-2 text-emerald-800">Position</th>
+                                <th class="p-2 text-emerald-800 text-center">Minimum Speed</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="p-2 font-bold text-slate-700">Highest (Top)</td>
+                                <td class="p-2 text-center font-mono font-bold bg-white text-emerald-600">$ 0 $</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-bold text-slate-700">Lowest (Bottom)</td>
+                                <td class="p-2 text-center font-mono font-bold bg-white text-emerald-600">$ \sqrt{4rg} = 2\sqrt{rg} $</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 font-bold text-slate-700">Midway (Horizontal)</td>
+                                <td class="p-2 text-center font-mono font-bold bg-white text-emerald-600">$ \sqrt{2rg} $</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="mt-3 bg-emerald-100 text-emerald-800 p-2 rounded text-center text-xs font-bold">
+                        Tension Difference (Bottom - Top) = $ 6mg $
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="moi" class="topic-section section-scroll">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl font-black shadow-lg shadow-blue-200">6</div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 poppins">Moment of Inertia ($I$)</h2>
+                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wide">Rotational Mass</p>
+                </div>
+            </div>
+
+            <div class="card card-core">
+                <div class="card-header"><i class="fa-solid fa-weight-hanging text-blue-500 mr-2"></i> Core Concept</div>
+                <p class="text-sm mb-3">
+                    Line mein chalne ke liye jo kaam <strong>Mass ($m$)</strong> karta hai (Rukawat ya Inertia dena), Gol ghoomne ke liye wahi kaam <strong>Moment of Inertia ($I$)</strong> karta hai. <br><br>
+                    Par $I$ sirf mass pe depend nahi karta, ispe bhi depend karta hai ki mass Axis se <strong>kitni door bikhra (distributed) hai</strong>. Agar mass axis ke bahot door hai, to $I$ jyada hoga, ghumana muskhil hoga.
+                </p>
+                <div class="flex flex-col md:flex-row gap-4 mt-4">
+                    <div class="flex-1 bg-white border border-blue-200 p-3 rounded shadow-sm text-center">
+                        <span class="text-xs font-bold text-slate-500 block mb-1">Discrete Particles (Alag-alag points)</span>
+                        <span class="font-mono text-lg font-bold text-blue-700">$ I = \sum m_i r_i^2 $</span>
+                    </div>
+                    <div class="flex-1 bg-white border border-blue-200 p-3 rounded shadow-sm text-center">
+                        <span class="text-xs font-bold text-slate-500 block mb-1">Continuous Body (Poori ek body)</span>
+                        <span class="font-mono text-lg font-bold text-blue-700">$ I = \int r^2 dm $</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white rounded-2xl p-6 shadow-lg mb-8 relative overflow-hidden">
+                <i class="fa-solid fa-compass-drafting absolute -right-4 -bottom-4 text-8xl text-white/10"></i>
+                <h3 class="text-xl font-bold mb-2 flex items-center"><i class="fa-solid fa-bullseye text-pink-400 mr-2"></i> Radius of Gyration ($K$)</h3>
+                <p class="text-sm text-purple-100 mb-4 w-3/4">
+                    Agar ek poori badi body ko hata kar, uska saara Mass ek choti si gaali (point) banakar kisi doori '$K$' par rakh dein, taaki M.I. ($I$) change na ho. Us doori ko Radius of Gyration kehte hain.
+                </p>
+                <div class="inline-block bg-black/30 backdrop-blur-sm border border-white/20 px-6 py-3 rounded-xl font-mono text-2xl font-black text-pink-300">
+                    $ I = MK^2 \implies K = \sqrt{\frac{I}{M}} $
+                </div>
+            </div>
+
+            <h3 class="font-black text-xl text-slate-800 mb-4 border-b-2 border-slate-200 pb-2">The Two Super-Heroes (Theorems)</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Parallel Axis -->
+                <div class="card card-form mb-0">
+                    <div class="card-header"><i class="fa-solid fa-lines-leaning text-purple-500 mr-2"></i> Parallel Axes Theorem</div>
+                    <p class="text-xs text-slate-600 mb-3">Kisi bhi aadi-tedhi axis pe $I$ nikalna ho, agar wo Center of Mass se jane wali axis ke parallel hai.</p>
+                    <div class="text-center font-mono text-xl font-bold bg-white py-3 rounded border border-purple-200 shadow-inner mb-3">
+                        $ I_O = I_C + Mh^2 $
+                    </div>
+                    <ul class="text-xs text-slate-500 space-y-1">
+                        <li>$I_O$: Target axis ka M.I.</li>
+                        <li>$I_C$: Center of mass wali axis ka M.I.</li>
+                        <li>$h$: Dono parallel line ke beech ka distance.</li>
+                    </ul>
+                </div>
+                
+                <!-- Perpendicular Axis -->
+                <div class="card card-form mb-0">
+                    <div class="card-header"><i class="fa-solid fa-plus text-purple-500 mr-2"></i> Perpendicular Axes Theorem</div>
+                    <p class="text-xs text-red-500 font-bold mb-3 uppercase tracking-wider">Warning: Valid ONLY for 2D (Flat/Laminar) objects!</p>
+                    <div class="text-center font-mono text-xl font-bold bg-white py-3 rounded border border-purple-200 shadow-inner mb-3">
+                        $ I_Z = I_X + I_Y $
+                    </div>
+                    <ul class="text-xs text-slate-500 space-y-1">
+                        <li>Object X-Y plane mein rakha hona chahiye.</li>
+                        <li>Teeno lines (X, Y, Z) ek hi point pe meet karni chahiye.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="rolling" class="topic-section section-scroll">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl font-black shadow-lg shadow-blue-200">7</div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 poppins">Rolling Motion</h2>
+                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wide">Ghoomna + Aage Badhna</p>
+                </div>
+            </div>
+
+            <div class="card card-core">
+                <div class="card-header"><i class="fa-solid fa-compact-disc text-blue-500 mr-2"></i> Total Energy of Rolling Body</div>
+                <p class="text-sm mb-4">
+                    Pure rolling ka matlab wheel apne jagah pe ghoom bhi raha hai (Rotation) aur sath mein aage bhi badh raha hai (Translation). To uske paas 2 tarah ki Kinetic Energy hoti hai!
+                </p>
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 text-center mb-4">
+                    <span class="text-sm font-bold text-blue-900 block mb-2">Total K.E. = Translational K.E. + Rotational K.E.</span>
+                    <span class="font-mono text-xl md:text-2xl font-black text-blue-700 bg-white px-4 py-2 rounded shadow-sm inline-block border border-blue-100">
+                        $ E = \frac{1}{2}Mv^2 \left[1 + \frac{K^2}{R^2}\right] $
+                    </span>
+                </div>
+                <p class="text-xs text-slate-500 text-center italic">Ye bracket wala term $\left[1 + \frac{K^2}{R^2}\right]$ bata deta hai ki object Ring hai, Disc hai ya Sphere hai.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                    <h4 class="font-bold text-sm text-slate-700 mb-2 border-b pb-1">Rolling down an Incline (Velocity at bottom)</h4>
+                    <div class="text-center font-mono text-lg font-bold bg-slate-50 py-2 rounded">
+                        $ v = \sqrt{\frac{2gh}{1 + \frac{K^2}{R^2}}} $
+                    </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                    <h4 class="font-bold text-sm text-slate-700 mb-2 border-b pb-1">Acceleration down the Incline</h4>
+                    <div class="text-center font-mono text-lg font-bold bg-slate-50 py-2 rounded">
+                        $ a = \frac{g \sin\theta}{1 + \frac{K^2}{R^2}} $
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card card-quiz mt-4">
+                <div class="card-header"><i class="fa-solid fa-trophy text-cyan-500 mr-2"></i> Race - Kaun Jeetega?</div>
+                <p class="text-sm font-bold text-slate-700 mb-2">Ek Ring aur ek Solid Sphere dono ko inclined plane se ek sath choda. Niche pehle kaun pahuchega?</p>
+                <details class="text-sm bg-white border border-cyan-200 rounded p-3 cursor-pointer group">
+                    <summary class="font-bold text-cyan-600 outline-none select-none">Tap to reveal the winner!</summary>
+                    <div class="mt-3 text-slate-700 pt-2 border-t border-cyan-100">
+                        Pehle wo pahuchega jiska <strong>Acceleration ($a$) jyada hoga.</strong><br>
+                        Formula mein dekho, jiske liye niche wala bracket $\left(1 + \frac{K^2}{R^2}\right)$ chota hoga, uska $a$ jyada hoga.<br><br>
+                        - Ring ke liye $\frac{K^2}{R^2} = 1$ (Bracket = 2)<br>
+                        - Solid Sphere ke liye $\frac{K^2}{R^2} = \frac{2}{5} = 0.4$ (Bracket = 1.4)<br><br>
+                        Kyunki Sphere ka bracket chota hai, uska acceleration zyada hai. <strong>Winner: Solid Sphere!</strong>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <div class="mt-12 bg-slate-800 text-white rounded-2xl p-6 text-center shadow-lg relative overflow-hidden no-print">
+            <i class="fa-solid fa-check-double absolute text-8xl text-white opacity-5 -right-4 -top-4"></i>
+            <h3 class="text-xl font-black text-yellow-400 mb-2">Aftab Sir's Final Advice</h3>
+            <p class="text-sm text-slate-300 leading-relaxed max-w-2xl mx-auto">
+                Bas itna dhyan se padh lo, concepts ko feel karo, ratt-ta mat maaro. Physics mein derivations tab yaad hoti hain jab aapko unka pehla step aur final reason pata ho. Best of luck for your exams! You will rock it! 🔥
+            </p>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-12 border-t border-slate-800">
+        <div class="max-w-4xl mx-auto px-4">
+            <h4 class="text-lg font-bold text-white mb-2 poppins tracking-wide">© Shah Aftab Ali</h4>
+            <p class="text-sm mb-3">Premium Physics Study Material prepared specifically for average to topper journey.</p>
+            <p class="text-xs font-mono text-emerald-400 border border-emerald-800 inline-block px-3 py-1 rounded bg-emerald-900/30">
+                <i class="fa-solid fa-phone mr-1"></i> Contact: +91 8928205931
+            </p>
+        </div>
+    </footer>
+
+    <!-- Back to top button -->
+    <a href="#" class="fixed bottom-6 right-6 bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg shadow-blue-300 flex items-center justify-center text-xl hover:bg-blue-700 hover:scale-110 transition-all duration-300 z-50 no-print">
+        <i class="fa-solid fa-arrow-up"></i>
+    </a>
+
+    <script>
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        };
+    </script>
+</body>
+</html>
